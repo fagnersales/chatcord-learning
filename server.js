@@ -3,6 +3,8 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 const formatMessage = require('./utils/messages')
+const multer = require("multer")
+
 const { userJoin, getCurrentUser, getRoomUsers, userLeave } = require('./utils/users')
 
 const app = express()
@@ -11,6 +13,8 @@ const io = socketio(server)
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')))
+
+///////////////
 
 const botName = "ChatCord Bot"
 
@@ -50,13 +54,13 @@ io.on('connection', socket => {
 
         if (user) {
             io.to(user.room)
-            .emit('message', formatMessage(botName, `<b>${user.username}</b> saiu da sala`))
+                .emit('message', formatMessage(botName, `<b>${user.username}</b> saiu da sala`))
 
             io.to(user.room)
-            .emit('roomUsers', {
-                room: user.room,
-                users: getRoomUsers(user.room)
-            })
+                .emit('roomUsers', {
+                    room: user.room,
+                    users: getRoomUsers(user.room)
+                })
         }
     })
 })
